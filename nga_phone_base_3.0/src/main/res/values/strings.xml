@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">NGA客户端</string>
+    <string name="app_name">NGA</string>
     <string name="menu_login">登录</string>
     <string name="menu_setting">设置</string>
     <string name="menu_exit">退出</string>
