@@ -14,11 +14,11 @@ buildscript {
         rxjava_version = '2.2.6'
     }
     repositories {
+        google()
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        google()
-        mavenCentral()
     }
     dependencies {
         classpath libs.gradle
@@ -29,12 +29,12 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/google' }
         //TODO Remove all dependencies in jcenter
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://www.jitpack.io' }
-        google()
-        mavenCentral()
     }
 
 }
