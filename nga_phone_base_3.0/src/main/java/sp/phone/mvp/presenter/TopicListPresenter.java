@@ -1,12 +1,10 @@
 package sp.phone.mvp.presenter;
 
-import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -19,9 +17,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,8 +25,6 @@ import gov.anzong.androidnga.BuildConfig;
 import gov.anzong.androidnga.activity.compose.board.ForumBoardViewModel;
 import gov.anzong.androidnga.arouter.ARouterConstants;
 import gov.anzong.androidnga.base.util.ContextUtils;
-import gov.anzong.androidnga.base.util.DeviceUtils;
-import gov.anzong.androidnga.base.util.PermissionUtils;
 import gov.anzong.androidnga.base.util.ToastUtils;
 import gov.anzong.androidnga.common.util.FileUtils;
 import gov.anzong.androidnga.common.util.LogUtils;
@@ -258,47 +252,24 @@ public class TopicListPresenter extends ViewModel implements LifecycleObserver {
     }
 
     public void exportCacheTopic(Fragment fragment) {
-        PermissionUtils.requestAsync(fragment, new BaseSubscriber<Boolean>() {
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    String srcDir = ContextUtils.getContext().getFilesDir().getAbsolutePath() + "/cache/";
-
-                    DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
-                    String dateStr = dateFormat.format(new Date(System.currentTimeMillis()));
-                    String destDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator
-                            + BuildConfig.APPLICATION_ID + File.separator + "cache/cache_" + dateStr + ".zip";
-
-                    if (FileUtils.zipFiles(srcDir, destDir)) {
-                        ToastUtils.success("导出成功至" + destDir);
-                    } else {
-                        ToastUtils.error("导出失败");
-                    }
-                } else {
-                    ToastUtils.warn("无存储权限，无法导出！");
-                }
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        String dateStr = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
+        String fileName = "cache_" + dateStr + ".zip";
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        fragment.startActivityForResult(intent, TopicCacheFragment.REQUEST_EXPORT_CACHE);
     }
 
     public void showFileChooser(Fragment fragment) {
-        PermissionUtils.request(fragment, new BaseSubscriber<Boolean>() {
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    try {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("*/*");
-                        fragment.startActivityForResult(intent, TopicCacheFragment.REQUEST_IMPORT_CACHE);
-                    } catch (ActivityNotFoundException e) {
-                        ToastUtils.warn("系统不支持导入");
-                    }
-                } else {
-                    ToastUtils.warn("无存储权限，无法导入！");
-                }
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        try {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
+            fragment.startActivityForResult(intent, TopicCacheFragment.REQUEST_IMPORT_CACHE);
+        } catch (ActivityNotFoundException e) {
+            ToastUtils.warn("系统不支持导入");
+        }
 
     }
 
@@ -323,6 +294,30 @@ public class TopicListPresenter extends ViewModel implements LifecycleObserver {
             LogUtils.print(e);
         }
         tempZipFile.delete();
+    }
+
+    public void exportCacheTopic(Context context, Uri destUri) {
+        String srcDir = ContextUtils.getContext().getFilesDir().getAbsolutePath() + "/cache/";
+        File tempZipFile = new File(ContextUtils.getContext().getCacheDir(), "cache_export.zip");
+        if (!FileUtils.zipFiles(srcDir, tempZipFile.getAbsolutePath())) {
+            ToastUtils.error("导出失败");
+            return;
+        }
+
+        try (InputStream is = new java.io.FileInputStream(tempZipFile);
+             java.io.OutputStream os = context.getContentResolver().openOutputStream(destUri)) {
+            if (os == null) {
+                ToastUtils.error("无法写入所选文件");
+                return;
+            }
+            org.apache.commons.io.IOUtils.copy(is, os);
+            ToastUtils.success("导出成功");
+        } catch (Exception e) {
+            LogUtils.print(e);
+            ToastUtils.error("导出失败");
+        } finally {
+            tempZipFile.delete();
+        }
     }
 
     private boolean checkCacheZipFile(Context context, Uri uri) {

@@ -1,6 +1,5 @@
 package gov.anzong.androidnga.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
@@ -14,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import gov.anzong.androidnga.NgaClientApp;
 import gov.anzong.androidnga.R;
 import gov.anzong.androidnga.activity.compose.drawer.NavigationDrawerFragment;
-import gov.anzong.androidnga.base.util.PermissionUtils;
 import gov.anzong.androidnga.base.util.ThemeUtils;
 import sp.phone.theme.ThemeManager;
 import sp.phone.ui.fragment.dialog.VersionUpgradeDialogFragment;
@@ -31,7 +29,6 @@ public class MainActivity extends BaseActivity {
         EdgeToEdge.enable((ComponentActivity) this);
         super.onCreate(savedInstanceState);
         ThemeUtils.init(this);
-        checkPermission();
         checkNewVersion();
         initView();
         mIsNightMode = ThemeManager.getInstance().isNightMode();
@@ -43,15 +40,6 @@ public class MainActivity extends BaseActivity {
         if (!isTaskRoot()) {
             finish();
         }
-    }
-
-    private void checkPermission() {
-        try {
-            PermissionUtils.request(this, null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        } catch (Exception e) {
-            // ignore
-        }
-
     }
 
     private void checkNewVersion() {

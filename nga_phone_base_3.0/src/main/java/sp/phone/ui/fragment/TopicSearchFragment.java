@@ -46,6 +46,7 @@ public class TopicSearchFragment extends BaseFragment implements View.OnClickLis
 
     private static final String TAG = TopicSearchFragment.class.getSimpleName();
 
+    public static final int REQUEST_EXPORT_CACHE = 1;
     public static final int REQUEST_IMPORT_CACHE = 0;
 
     protected TopicListParam mRequestParam;

@@ -103,7 +103,12 @@ public class TopicCacheFragment extends TopicSearchFragment implements View.OnLo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_IMPORT_CACHE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_EXPORT_CACHE && resultCode == Activity.RESULT_OK) {
+            if (data == null || data.getData() == null) {
+                return;
+            }
+            mPresenter.exportCacheTopic(requireContext(), data.getData());
+        } else if (requestCode == REQUEST_IMPORT_CACHE && resultCode == Activity.RESULT_OK) {
             if (data == null) {
                 return;
             }

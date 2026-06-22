@@ -35,18 +35,6 @@ public class SettingsLabFragment extends BasePreferenceFragment {
         }
 
         preference.setVisible(false);
-        //preference.setChecked(Logger.getInstance().isLocalDebug());
-        //preference.setOnPreferenceChangeListener((preference1, newValue1) -> {
-        //    if (newValue1.equals(Boolean.TRUE)) {
-        //        if (!PermissionUtils.hasPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-        //            PermissionUtils.request(SettingsLabFragment.this, null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        //            return false;
-        //        }
-        //    }
-        //    Logger.getInstance().setLocalDebug(Boolean.TRUE.equals(newValue1));
-        //    Logger.getInstance().updateLogger();
-        //    return true;
-        //});
     }
 
     private void initCheckInPreference() {
