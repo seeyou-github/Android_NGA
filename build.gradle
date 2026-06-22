@@ -36,6 +36,7 @@ allprojects {
         //TODO Remove all dependencies in jcenter
         //maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://www.jitpack.io' }
+		jcenter()
     }
 
 }
