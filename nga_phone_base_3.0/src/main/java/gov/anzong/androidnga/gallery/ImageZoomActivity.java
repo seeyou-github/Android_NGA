@@ -13,8 +13,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager.widget.ViewPager;
 
-import com.justwen.androidnga.cloud.CloudServerManager;
-
 import java.io.File;
 import java.util.Arrays;
 
@@ -140,9 +138,6 @@ public class ImageZoomActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_share:
-                if (mDownloadResults.length == 0) {
-                    CloudServerManager.putCrashData(this, "mCurrentUrl", mCurrentUrl);
-                }
                 if (mDownloadResults[mPageIndex] != null) {
                     share(mDownloadResults[mPageIndex].file);
                 } else {
