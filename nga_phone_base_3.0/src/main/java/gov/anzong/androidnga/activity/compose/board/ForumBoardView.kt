@@ -19,6 +19,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -38,7 +41,10 @@ import kotlin.math.abs
 
 
 @Composable
-fun ForumBoardView(forumBoardViewModel: ForumBoardViewModel) {
+fun ForumBoardView(
+    forumBoardViewModel: ForumBoardViewModel,
+    onAddBoardClick: (() -> Unit)? = null,
+) {
     val boardData by forumBoardViewModel.boardLiveData.observeAsState()
     val tabs = arrayListOf<String>()
     boardData?.let {
@@ -46,7 +52,20 @@ fun ForumBoardView(forumBoardViewModel: ForumBoardViewModel) {
             tabs.add(it.name)
         }
         val initialPage = if (forumBoardViewModel.bookmarkSizeLiveData.value!! > 0) 0 else 1
-        TabLayoutWithPager(tabs = tabs, initialPage = initialPage) {
+        TabLayoutWithPager(
+            tabs = tabs,
+            initialPage = initialPage,
+            trailingContent = {
+                if (onAddBoardClick != null) {
+                    IconButton(onClick = onAddBoardClick) {
+                        androidx.compose.material.Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = "add"
+                        )
+                    }
+                }
+            }
+        ) {
             ForumBoardContent(it, forumBoardViewModel)
         }
     }

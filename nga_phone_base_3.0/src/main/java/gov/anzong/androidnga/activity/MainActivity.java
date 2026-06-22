@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import gov.anzong.androidnga.NgaClientApp;
 import gov.anzong.androidnga.R;
-import gov.anzong.androidnga.activity.compose.drawer.NavigationDrawerFragment;
+import gov.anzong.androidnga.activity.compose.main.MainShellFragment;
 import gov.anzong.androidnga.base.util.ThemeUtils;
 import sp.phone.theme.ThemeManager;
 import sp.phone.ui.fragment.dialog.VersionUpgradeDialogFragment;
@@ -62,9 +62,9 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(NavigationDrawerFragment.class.getSimpleName());
+        Fragment fragment = fm.findFragmentByTag(MainShellFragment.class.getSimpleName());
         if (fragment == null) {
-            fm.beginTransaction().replace(android.R.id.content, new NavigationDrawerFragment(), NavigationDrawerFragment.class.getSimpleName()).commit();
+            fm.beginTransaction().replace(android.R.id.content, new MainShellFragment(), MainShellFragment.class.getSimpleName()).commit();
         }
 
     }

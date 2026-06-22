@@ -2,6 +2,8 @@ package com.justwen.androidnga.ui.compose.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -24,28 +26,34 @@ fun TabLayoutWithPager(
     tabs: List<String> = arrayListOf("1", "2"),
     initialPage: Int = 0,
     fixed: Boolean = false,
+    trailingContent: @Composable (() -> Unit)? = null,
     content: @Composable ((index: Int) -> Unit)? = null,
 ) {
     val pagerState = rememberPagerState(pageCount = { tabs.size }, initialPage = initialPage)
     val coroutineScope = rememberCoroutineScope()
     Column {
-        if (fixed) {
-            TabRow(
-                selectedTabIndex = pagerState.currentPage,
-                modifier = Modifier
-                    .background(color = MaterialTheme.colors.primary)
-            ) {
-                TabRowItems(tabs, pagerState, coroutineScope)
+        Row {
+            if (fixed) {
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(color = MaterialTheme.colors.primary)
+                ) {
+                    TabRowItems(tabs, pagerState, coroutineScope)
+                }
+            } else {
+                ScrollableTabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    edgePadding = 0.dp,
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(color = MaterialTheme.colors.primary)
+                ) {
+                    TabRowItems(tabs, pagerState, coroutineScope)
+                }
             }
-        } else {
-            ScrollableTabRow(
-                selectedTabIndex = pagerState.currentPage,
-                edgePadding = 0.dp,
-                modifier = Modifier
-                    .background(color = MaterialTheme.colors.primary)
-            ) {
-                TabRowItems(tabs, pagerState, coroutineScope)
-            }
+            trailingContent?.invoke()
         }
         HorizontalPager(state = pagerState) { pageIndex -> content?.invoke(pageIndex) }
     }

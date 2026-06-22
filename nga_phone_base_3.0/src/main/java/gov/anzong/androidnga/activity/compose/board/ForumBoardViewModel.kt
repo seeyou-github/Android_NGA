@@ -25,8 +25,17 @@ object ForumBoardViewModel : ViewModel() {
     const val BOARD_REMOTE_REQUEST_TIME_KEY = "board_remote_request_time"
 
     init {
-        boardLiveData.postValue(forumBoardModel.loadBoardData())
+        boardLiveData.postValue(forumBoardModel.loadHomeRootBoards().toMutableList())
         bookmarkSizeLiveData.postValue(forumBoardModel.bookmarkBoard.children?.size)
+    }
+
+    fun reloadHomeBoards() {
+        boardLiveData.postValue(forumBoardModel.loadHomeRootBoards().toMutableList())
+    }
+
+    fun saveHomeBoards(visibleRootIds: List<String>, hiddenRootIds: List<String>) {
+        forumBoardModel.saveHomeRootBoards(visibleRootIds, hiddenRootIds)
+        reloadHomeBoards()
     }
 
     fun getBoardData(index: Int = 0): BoardEntity {

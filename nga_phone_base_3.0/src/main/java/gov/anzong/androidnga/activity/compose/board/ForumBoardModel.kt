@@ -205,6 +205,43 @@ class ForumBoardModel {
         }
     }
 
+    fun loadHomeRootBoards(): List<BoardEntity> {
+        // Root boards are bookmark + local board list
+        val roots = boardList.toMutableList()
+        val raw = PreferenceUtils.getData(PreferenceKey.KEY_HOME_BOARD_TAB_CONFIG, "")
+        if (raw.isNullOrEmpty()) {
+            return roots
+        }
+        return try {
+            val cfg = JSON.parseObject(raw, HomeBoardTabConfig::class.java) ?: return roots
+            val hidden = cfg.hiddenRootIds.toSet()
+            val rootMap = roots.associateBy { it.id }
+            val ordered = mutableListOf<BoardEntity>()
+            cfg.visibleRootIds.forEach { id ->
+                val item = rootMap[id]
+                if (item != null && !hidden.contains(id)) {
+                    ordered.add(item)
+                }
+            }
+            // Append any roots not mentioned.
+            roots.forEach { r ->
+                if (hidden.contains(r.id)) return@forEach
+                if (ordered.none { it.id == r.id }) ordered.add(r)
+            }
+            ordered
+        } catch (_: Throwable) {
+            roots
+        }
+    }
+
+    fun saveHomeRootBoards(visibleRootIds: List<String>, hiddenRootIds: List<String>) {
+        val cfg = HomeBoardTabConfig().apply {
+            this.visibleRootIds = visibleRootIds.toMutableList()
+            this.hiddenRootIds = hiddenRootIds.toMutableList()
+        }
+        PreferenceUtils.putData(PreferenceKey.KEY_HOME_BOARD_TAB_CONFIG, JSON.toJSONString(cfg))
+    }
+
     fun getBoardName(fid: Int, stid: Int): String {
         val boardEntity = findBoard(fid, stid)
         return boardEntity?.name ?: ""
