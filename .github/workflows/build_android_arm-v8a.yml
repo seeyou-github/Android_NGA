@@ -1,0 +1,56 @@
+name: build_android_arm-v8a_tmpfile
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build_android_arm_v8a_tmpfile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Build Android arm-v8a APK
+        run: ./gradlew :nga_phone_base_3.0:assembleRelease
+
+      - name: Upload Android APK to tmpfile.link
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk_dir="nga_phone_base_3.0/build/outputs/apk/release"
+          file="$(find "${apk_dir}" -maxdepth 1 -type f -name '*.apk' | sort | tail -n 1)"
+          if [ -z "${file}" ]; then
+            echo "No APK found in ${apk_dir}" >&2
+            exit 1
+          fi
+
+          response="$(curl -sS -X POST -F "file=@${file}" https://tmpfile.link/api/upload)"
+          echo "${response}"
+
+          download="$(printf '%s' "${response}" | jq -r '.downloadLinkEncoded // empty')"
+          if [ -z "${download}" ]; then
+            echo "tmpfile.link upload failed: ${response}" >&2
+            exit 1
+          fi
+
+          {
+            echo "## Android arm-v8a build"
+            echo
+            echo "- File: \`$(basename "${file}")\`"
+            echo "- Download: ${download}"
+            echo "- Retention: tmpfile.link anonymous uploads are deleted after 7 days."
+          } >> "${GITHUB_STEP_SUMMARY}"
