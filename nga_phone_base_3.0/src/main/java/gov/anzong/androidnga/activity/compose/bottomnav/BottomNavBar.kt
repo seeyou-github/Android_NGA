@@ -1,16 +1,16 @@
 package gov.anzong.androidnga.activity.compose.bottomnav
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -33,28 +33,36 @@ object BottomTabs {
     )
 }
 
+private val BottomBarHeight = 44.dp
+
 @Composable
 fun BottomNavBar(
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
 ) {
     NavigationBar(
+        modifier = Modifier.height(BottomBarHeight),
         containerColor = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.primary,
+        tonalElevation = 0.dp,
+        windowInsets = WindowInsets.navigationBars,
     ) {
         BottomTabs.ITEMS.forEachIndexed { index, item ->
             val selected = index == selectedIndex
             NavigationBarItem(
                 selected = selected,
                 onClick = { onTabSelected(index) },
+                alwaysShowLabel = false,
                 icon = {
                     Icon(
                         painter = painterResource(id = item.iconResId),
                         contentDescription = item.label,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier
+                            .fillMaxHeight(0.9f)
+                            .padding(2.dp),
                     )
                 },
-                label = { Text(text = item.label) },
+                label = null,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colors.primary,
                     selectedTextColor = MaterialTheme.colors.primary,
