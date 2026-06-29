@@ -55,6 +55,10 @@ fun OptionActionMenu(optionActions: List<OptionMenuData>? = null) {
     val showItems = optionActions.filter { it.type == OptionMenuData.OPTION_MENU_TYPE_ALWAYS_SHOW }
     val hideItems = optionActions.filter { it.type == OptionMenuData.OPTION_MENU_TYPE_HIDDEN }
 
+    if (showItems.isEmpty() && hideItems.isEmpty()) {
+        return
+    }
+
     Row(verticalAlignment = Alignment.CenterVertically) {
         showItems.forEach {
             IconButton(onClick = {
@@ -68,21 +72,22 @@ fun OptionActionMenu(optionActions: List<OptionMenuData>? = null) {
             }
 
         }
-        var expanded by remember { mutableStateOf(false) }
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "", tint = Color.White)
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                hideItems.forEach(action = {
-                    DropdownMenuItem(onClick = {
-                        expanded = false
-                        it.action()
-                    }) {
-                        Text(text = it.title!!)
-                    }
-                })
+        if (hideItems.isNotEmpty()) {
+            var expanded by remember { mutableStateOf(false) }
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "", tint = Color.White)
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    hideItems.forEach(action = {
+                        DropdownMenuItem(onClick = {
+                            expanded = false
+                            it.action()
+                        }) {
+                            Text(text = it.title!!)
+                        }
+                    })
+                }
             }
         }
-
     }
 
 }

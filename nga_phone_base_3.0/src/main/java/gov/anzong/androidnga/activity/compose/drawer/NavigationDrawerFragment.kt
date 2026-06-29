@@ -23,6 +23,7 @@ import gov.anzong.androidnga.activity.compose.bottomnav.BottomTabs
 import gov.anzong.androidnga.activity.compose.board.ForumBoardViewModel
 import gov.anzong.androidnga.activity.compose.home.HomeTab
 import gov.anzong.androidnga.activity.compose.profile.ProfileMenuItem
+import gov.anzong.androidnga.activity.compose.profile.ProfileMenuSection
 import gov.anzong.androidnga.activity.compose.profile.ProfileTab
 import com.justwent.androidnga.bu.UserManager
 import sp.phone.common.User
@@ -53,17 +54,18 @@ class NavigationDrawerFragment : BaseComposeFragment() {
     private fun getHomeTopAppBarData(): TopAppBarData {
         val topAppBarData = TopAppBarData(title = getString(R.string.start_title))
         topAppBarData.navigationIconAction = null
-        topAppBarData.optionMenuData = getOptionMenuData()
+        topAppBarData.optionMenuData = getHomeOptionMenuData()
         return topAppBarData
     }
 
     private fun getProfileTopAppBarData(): TopAppBarData {
         val topAppBarData = TopAppBarData(title = "我的")
         topAppBarData.navigationIconAction = null
+        topAppBarData.optionMenuData = emptyList()
         return topAppBarData
     }
 
-    private fun getOptionMenuData(): List<OptionMenuData> {
+    private fun getHomeOptionMenuData(): List<OptionMenuData> {
         return arrayListOf(
             OptionMenuData(
                 title = "搜索用户",
@@ -71,38 +73,14 @@ class NavigationDrawerFragment : BaseComposeFragment() {
                 type = OptionMenuData.OPTION_MENU_TYPE_ALWAYS_SHOW,
                 icon = R.drawable.btn_ic_search,
             ),
-            OptionMenuData(
-                title = "我的主题",
-                action = { viewModel.startPostPage(requireContext(), false) },
-            ),
-            OptionMenuData(
-                title = "我的回复",
-                action = { viewModel.startPostPage(requireContext(), true) },
-            ),
-            OptionMenuData(
-                title = "我的缓存",
-                action = { viewModel.startCacheTopicPage(requireContext()) },
-            ),
-            OptionMenuData(
-                title = "短消息",
-                action = { viewModel.startMessagePage(requireContext()) },
-            ),
-            OptionMenuData(
-                title = "收藏夹",
-                action = { viewModel.startFavoriteTopicPage(requireContext()) },
-            ),
-            OptionMenuData(
-                title = "设置",
-                action = { viewModel.startSettingsPage(requireActivity()) },
-            ),
         )
     }
 
-    private fun buildProfileMenuItems(): List<ProfileMenuItem> {
+    private fun buildProfileMenuSections(): List<ProfileMenuSection> {
         val replyCount = viewModel.replyCount.value
         val extra: String? = if (replyCount != null && replyCount > 0) replyCount.toString() else null
 
-        return arrayListOf(
+        val firstSection = arrayListOf(
             ProfileMenuItem(
                 label = "登录账号",
                 iconResId = R.drawable.ic_login,
@@ -129,11 +107,53 @@ class NavigationDrawerFragment : BaseComposeFragment() {
                 extra = extra,
                 onClick = { viewModel.startNotificationActivity(requireActivity()) },
             ),
+        )
+
+        val secondSection = arrayListOf(
+            ProfileMenuItem(
+                label = "我的主题",
+                iconResId = R.drawable.ic_action_gun,
+                onClick = { viewModel.startPostPage(requireContext(), false) },
+            ),
+            ProfileMenuItem(
+                label = "我的回复",
+                iconResId = R.drawable.ic_action_gun,
+                onClick = { viewModel.startPostPage(requireContext(), true) },
+            ),
+            ProfileMenuItem(
+                label = "我的缓存",
+                iconResId = R.drawable.ic_action_gun,
+                onClick = { viewModel.startCacheTopicPage(requireContext()) },
+            ),
+            ProfileMenuItem(
+                label = "短消息",
+                iconResId = R.drawable.ic_action_gun,
+                onClick = { viewModel.startMessagePage(requireContext()) },
+            ),
+            ProfileMenuItem(
+                label = "收藏夹",
+                iconResId = R.drawable.ic_action_gun,
+                onClick = { viewModel.startFavoriteTopicPage(requireContext()) },
+            ),
+        )
+
+        val thirdSection = arrayListOf(
+            ProfileMenuItem(
+                label = "设置",
+                iconResId = R.drawable.ic_action_about,
+                onClick = { viewModel.startSettingsPage(requireActivity()) },
+            ),
             ProfileMenuItem(
                 label = "关于",
                 iconResId = R.drawable.ic_action_about,
                 onClick = { viewModel.startAboutNgaClient(requireActivity()) },
             ),
+        )
+
+        return arrayListOf(
+            ProfileMenuSection(items = firstSection),
+            ProfileMenuSection(items = secondSection),
+            ProfileMenuSection(items = thirdSection),
         )
     }
 
@@ -168,7 +188,7 @@ class NavigationDrawerFragment : BaseComposeFragment() {
                 }
                 BottomTabs.PROFILE_INDEX -> {
                     ProfileTab(
-                        buildMenuItems = { buildProfileMenuItems() },
+                        buildSections = { buildProfileMenuSections() },
                         onAvatarClick = { handleAvatarClick() },
                     )
                 }

@@ -51,22 +51,35 @@ data class ProfileMenuItem(
     val onClick: () -> Unit,
 )
 
+data class ProfileMenuSection(
+    val items: List<ProfileMenuItem>,
+)
+
 @Composable
 fun ProfileTab(
-    buildMenuItems: () -> List<ProfileMenuItem>,
+    buildSections: () -> List<ProfileMenuSection>,
     onAvatarClick: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         UserHeaderView(onAvatarClick = onAvatarClick)
-        HorizontalDivider()
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
-            val menuItems = buildMenuItems()
-            items(menuItems) { item ->
-                ProfileMenuRow(item)
+            val sections = buildSections()
+            sections.forEachIndexed { index, section ->
+                if (index > 0) {
+                    item(key = "divider_$index") {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            color = Color.LightGray,
+                        )
+                    }
+                }
+                items(items = section.items, key = { "${section.items.indexOf(it)}_${it.label}" }) { item ->
+                    ProfileMenuRow(item)
+                }
             }
             item {
                 val paddingValues = WindowInsets.navigationBars.asPaddingValues()
@@ -147,16 +160,16 @@ private fun UserAvatarView(user: User? = null, userCount: Int = 0) {
         }
         androidx.compose.material.Text(
             text = msg,
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = 6.dp),
             color = Color.White,
-            fontSize = 14.sp
+            fontSize = 13.sp
         )
         androidx.compose.material.Text(
             text = subMsg,
-            maxLines = 2,
-            modifier = Modifier.padding(top = 6.dp),
+            maxLines = 1,
+            modifier = Modifier.padding(top = 2.dp),
             color = Color.White,
-            fontSize = 14.sp
+            fontSize = 12.sp
         )
     }
 }
@@ -170,7 +183,7 @@ fun UserHeaderView(onAvatarClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(100.dp)
             .background(MaterialTheme.colors.primary)
             .clickable { onAvatarClick() }
     ) {
@@ -178,7 +191,7 @@ fun UserHeaderView(onAvatarClick: () -> Unit = {}) {
             targetState = activeIndex,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp),
+                .height(100.dp),
         ) { index ->
             Box(
                 modifier = Modifier
