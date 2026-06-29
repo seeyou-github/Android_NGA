@@ -1,6 +1,5 @@
 package com.justwen.androidnga.ui.compose.widget
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -107,14 +106,16 @@ fun TopAppBarEx(
             }
         },
         navigationIcon = {
-            IconButton(onClick = {
-                topAppBarData.navigationIconAction?.invoke()
-            }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    tint = Color.White,
-                    contentDescription = "Localized description"
-                )
+            if (topAppBarData.navigationIconAction != null) {
+                IconButton(onClick = {
+                    topAppBarData.navigationIconAction?.invoke()
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        tint = Color.White,
+                        contentDescription = "Localized description"
+                    )
+                }
             }
         },
         actions = {
@@ -145,6 +146,7 @@ data class OptionMenuData(
 fun ScaffoldApp(
     topAppBarData: TopAppBarData = TopAppBarData("App"),
     fabClick: (() -> Unit)? = null,
+    bottomBar: @Composable (() -> Unit)? = null,
     appContent: @Composable (() -> Unit)? = null,
 ) {
     rememberSystemUiController().run {
@@ -156,13 +158,15 @@ fun ScaffoldApp(
                 topAppBarData = topAppBarData
             )
         },
+        bottomBar = {
+            bottomBar?.invoke()
+        },
         floatingActionButton = {
             FloatingActionButton(fabClick = fabClick)
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier.padding(innerPadding)
         ) {
             appContent?.invoke()
         }
