@@ -114,6 +114,10 @@ public class ArticleTabFragment extends BaseRxFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        Bundle args = getArguments();
+        if (args != null && args.getBoolean("hide_fab", false)) {
+            mFam.setVisibility(View.GONE);
+        }
         if (ThemeManager.getInstance().hasCustomTheme()) {
             int topBarColor = ThemeManager.getInstance().getCustomTopBarColor(view.getContext());
             mAppBarLayout.setBackgroundColor(topBarColor);

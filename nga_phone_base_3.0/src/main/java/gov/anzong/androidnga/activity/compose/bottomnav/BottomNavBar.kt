@@ -28,10 +28,12 @@ data class BottomTabItem(
 
 object BottomTabs {
     const val HOME_INDEX = 0
-    const val PROFILE_INDEX = 1
+    const val BOARD_INDEX = 1
+    const val PROFILE_INDEX = 2
 
     val ITEMS = listOf(
         BottomTabItem(label = "主页", iconResId = R.drawable.ic_tab_home),
+        BottomTabItem(label = "板块", iconResId = R.drawable.ic_tab_board),
         BottomTabItem(label = "我的", iconResId = R.drawable.ic_tab_profile),
     )
 }
@@ -66,7 +68,7 @@ fun BottomNavBar(
                         Icon(
                             painter = painterResource(id = item.iconResId),
                             contentDescription = item.label,
-                            modifier = Modifier.fillMaxSize(0.8f),
+                            modifier = Modifier.fillMaxSize(0.6f),
                         )
                     }
                 },

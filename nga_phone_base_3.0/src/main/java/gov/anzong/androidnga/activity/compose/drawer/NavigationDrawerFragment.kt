@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.ViewModelProvider
@@ -18,9 +22,10 @@ import com.justwen.androidnga.ui.compose.widget.OptionMenuData
 import com.justwen.androidnga.ui.compose.widget.ScaffoldApp
 import com.justwen.androidnga.ui.compose.widget.TopAppBarData
 import gov.anzong.androidnga.R
+import gov.anzong.androidnga.activity.compose.board.ForumBoardView
+import gov.anzong.androidnga.activity.compose.board.ForumBoardViewModel
 import gov.anzong.androidnga.activity.compose.bottomnav.BottomNavBar
 import gov.anzong.androidnga.activity.compose.bottomnav.BottomTabs
-import gov.anzong.androidnga.activity.compose.board.ForumBoardViewModel
 import gov.anzong.androidnga.activity.compose.home.HomeTab
 import gov.anzong.androidnga.activity.compose.profile.ProfileMenuItem
 import gov.anzong.androidnga.activity.compose.profile.ProfileMenuSection
@@ -178,8 +183,14 @@ class NavigationDrawerFragment : BaseComposeFragment() {
     fun NavigationRoot() {
         var selectedIndex by remember { mutableIntStateOf(BottomTabs.HOME_INDEX) }
 
+        val topBarData = when (selectedIndex) {
+            BottomTabs.HOME_INDEX -> getHomeTopAppBarData()
+            BottomTabs.BOARD_INDEX -> TopAppBarData(title = "板块")
+            else -> getProfileTopAppBarData()
+        }
+
         ScaffoldApp(
-            topAppBarData = if (selectedIndex == BottomTabs.HOME_INDEX) getHomeTopAppBarData() else getProfileTopAppBarData(),
+            topAppBarData = topBarData,
             bottomBar = {
                 BottomNavBar(
                     selectedIndex = selectedIndex,
@@ -187,11 +198,18 @@ class NavigationDrawerFragment : BaseComposeFragment() {
                 )
             }
         ) {
-            when (selectedIndex) {
-                BottomTabs.HOME_INDEX -> {
+            Box(Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(if (selectedIndex == BottomTabs.HOME_INDEX) 1f else 0f)
+                ) {
                     HomeTab(forumBoardViewModel = forumBoardViewModel)
                 }
-                BottomTabs.PROFILE_INDEX -> {
+                if (selectedIndex == BottomTabs.BOARD_INDEX) {
+                    ForumBoardView(forumBoardViewModel = forumBoardViewModel)
+                }
+                if (selectedIndex == BottomTabs.PROFILE_INDEX) {
                     ProfileTab(
                         buildSections = { buildProfileMenuSections() },
                         onAvatarClick = { handleAvatarClick() },

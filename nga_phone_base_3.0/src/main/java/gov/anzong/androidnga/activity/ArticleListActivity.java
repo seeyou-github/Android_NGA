@@ -37,6 +37,9 @@ public class ArticleListActivity extends BaseActivity {
             fragment.setHasOptionsMenu(true);
             Bundle bundle = new Bundle();
             bundle.putParcelable(ParamKey.KEY_PARAM, mRequestParam);
+            if (getIntent().hasExtra("hide_fab")) {
+                bundle.putBoolean("hide_fab", getIntent().getBooleanExtra("hide_fab", false));
+            }
             fragment.setArguments(bundle);
             fm.beginTransaction().replace(android.R.id.content, fragment).commit();
         } else {
