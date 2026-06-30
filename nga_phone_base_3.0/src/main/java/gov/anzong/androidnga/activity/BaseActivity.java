@@ -136,6 +136,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             ThemeManager tm = ThemeManager.getInstance();
             if (tm.hasCustomTheme()) {
                 toolbar.setBackgroundColor(tm.getCustomTopBarColor(this));
+                toolbar.setTitleTextColor(tm.getCustomTextColor(this));
             }
             setSupportActionBar(toolbar);
             ActionBar actionBar = getSupportActionBar();

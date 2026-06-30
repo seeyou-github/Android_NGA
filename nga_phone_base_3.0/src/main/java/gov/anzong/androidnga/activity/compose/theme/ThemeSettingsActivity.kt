@@ -271,7 +271,8 @@ private fun ThemeDetailDialog(
     onDismiss: () -> Unit,
     onApply: (ThemeConfig) -> Unit,
 ) {
-    var editedConfig by remember { mutableStateOf(preset.config) }
+    val savedConfig = remember { ThemeConfig.load(ThemeManager.getInstance().isNightMode()) }
+    var editedConfig by remember { mutableStateOf(savedConfig) }
     var editingColorKey by remember { mutableStateOf<String?>(null) }
 
     AlertDialog(

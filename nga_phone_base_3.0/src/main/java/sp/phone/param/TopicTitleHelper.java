@@ -129,12 +129,6 @@ public class TopicTitleHelper {
             }
         }
 
-        if (!TextUtils.isEmpty(entry.getBoard())) {
-            SpannableStringBuilder boardBuilder = new SpannableStringBuilder();
-            boardBuilder.append("  [").append(entry.getBoard()).append("]");
-            boardBuilder.setSpan(new ForegroundColorSpan(ContextUtils.getColor(R.color.text_color_disabled)), 0, boardBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.append(boardBuilder);
-        }
         return builder;
     }
 

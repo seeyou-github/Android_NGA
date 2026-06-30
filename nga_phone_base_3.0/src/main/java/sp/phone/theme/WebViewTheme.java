@@ -16,7 +16,11 @@ public class WebViewTheme {
     private int mQuoteBackgroundColor;
 
     public WebViewTheme(Context context) {
-        mWebTextColor = ContextCompat.getColor(context, R.color.web_text_color);
+        if (ThemeManager.getInstance().hasCustomTheme()) {
+            mWebTextColor = ThemeManager.getInstance().getCustomTextColor(context);
+        } else {
+            mWebTextColor = ContextCompat.getColor(context, R.color.web_text_color);
+        }
         mQuoteBackgroundColor = ContextCompat.getColor(context, R.color.web_quote_background_color);
     }
 
