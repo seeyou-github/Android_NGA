@@ -83,6 +83,13 @@ object BackupImporter {
             val jsonStr = String(bytes, Charsets.UTF_8)
             val parsed = JSON.parseObject(jsonStr, BackupData::class.java)
             LogUtils.i(TAG, "JSON.parseObject 完成: ${parsed != null}")
+            if (parsed != null) {
+                val userCount = parsed.users?.size ?: -1
+                val filterUserCount = parsed.filterUsers?.size ?: -1
+                val filterKeywordCount = parsed.filterKeywords?.size ?: -1
+                val settingsCount = parsed.settings?.size ?: -1
+                LogUtils.i(TAG, "    反序列化后字段内容: settings=$settingsCount, filterUsers=$filterUserCount, filterKeywords=$filterKeywordCount, users=$userCount, activeIndex=${parsed.activeUserIndex}, boardBookmarks=${parsed.boardBookmarks?.let { "存在(${it.length}字)" } ?: "null"}")
+            }
             parsed
         } catch (e: JSONException) {
             LogUtils.e(TAG, "JSON 解析失败(JSONException): ${e.message}", e)
