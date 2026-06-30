@@ -34,6 +34,7 @@ import sp.phone.param.ArticleListParam;
 import sp.phone.param.ParamKey;
 import sp.phone.rxjava.RxEvent;
 import sp.phone.task.BookmarkTask;
+import sp.phone.theme.ThemeManager;
 import sp.phone.ui.adapter.ArticleListAdapter;
 import sp.phone.ui.fragment.dialog.BaseDialogFragment;
 import sp.phone.ui.fragment.dialog.PostCommentDialogFragment;
@@ -250,6 +251,9 @@ public class ArticleListFragment extends BaseMvpFragment<ArticleListPresenter> i
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         ((BaseActivity) getActivity()).setupToolbar();
+        if (ThemeManager.getInstance().hasCustomTheme()) {
+            mLoadingView.setBackgroundColor(ThemeManager.getInstance().getCustomBackgroundColor(view.getContext()));
+        }
         mArticleAdapter = new ArticleListAdapter(getContext(),getActivity().getSupportFragmentManager());
         mArticleAdapter.setSupportListener(mSupportListener);
         mArticleAdapter.setOpposeListener(mOpposeListener);

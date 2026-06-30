@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.material.appbar.AppBarLayout;
 import com.justwen.androidnga.base.activity.ARouterConstants;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
@@ -67,6 +68,9 @@ public class ArticleTabFragment extends BaseRxFragment {
     @BindView(R.id.tabs)
     public TabLayoutEx mTabLayout;
 
+    @BindView(R.id.appbar)
+    public com.google.android.material.appbar.AppBarLayout mAppBarLayout;
+
     private static final String GOTO_TAG = "goto";
 
     @BindView(R.id.fab_menu)
@@ -110,6 +114,11 @@ public class ArticleTabFragment extends BaseRxFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        if (ThemeManager.getInstance().hasCustomTheme()) {
+            int topBarColor = ThemeManager.getInstance().getCustomTopBarColor(view.getContext());
+            mAppBarLayout.setBackgroundColor(topBarColor);
+            mTabLayout.setBackgroundColor(topBarColor);
+        }
         updateFloatingMenu();
         mPagerAdapter = new ArticlePagerAdapter(getChildFragmentManager(), mRequestParam);
         mViewPager.setAdapter(mPagerAdapter);

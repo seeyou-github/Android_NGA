@@ -47,6 +47,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="Theme_NgaTransparentBg">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <style name="Theme.AboutActivity" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/material_window_background</item>
         <item name="mal_card_background">@color/material_card_background</item>

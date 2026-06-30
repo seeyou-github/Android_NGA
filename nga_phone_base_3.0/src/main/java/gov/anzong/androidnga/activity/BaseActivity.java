@@ -165,6 +165,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void updateThemeUi() {
         ThemeManager tm = ThemeManager.getInstance();
         setTheme(tm.getTheme(mToolbarEnabled));
+        if (tm.hasCustomTheme()) {
+            getTheme().applyStyle(R.style.Theme_NgaTransparentBg, true);
+        }
     }
 
     @Deprecated
