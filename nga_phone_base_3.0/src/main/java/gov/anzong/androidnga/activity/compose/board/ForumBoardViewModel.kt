@@ -37,6 +37,12 @@ object ForumBoardViewModel : ViewModel() {
         bookmarkSizeLiveData.value = forumBoardModel.addBookmarkBoard(name, fid, stid,head)
     }
 
+    fun reloadBookmarkBoard() {
+        forumBoardModel.reloadBookmarkBoard()
+        boardLiveData.postValue(forumBoardModel.loadBoardData())
+        bookmarkSizeLiveData.postValue(forumBoardModel.bookmarkBoard.children?.size)
+    }
+
     fun isBookmarkBoard(fid: Int, stid: Int): Boolean {
         return forumBoardModel.isBookmarkBoard(fid, stid)
     }

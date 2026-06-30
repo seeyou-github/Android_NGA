@@ -7,8 +7,10 @@ import com.justwent.androidnga.bu.UserManager
 import gov.anzong.androidnga.activity.compose.filter.FilterKeyword
 import gov.anzong.androidnga.activity.compose.filter.FilterManager
 import gov.anzong.androidnga.base.util.PreferenceUtils
+import gov.anzong.androidnga.base.utils.Files
 import gov.anzong.androidnga.common.util.LogUtils
 import sp.phone.common.User
+import java.io.File
 import java.io.OutputStream
 
 object BackupExporter {
@@ -52,12 +54,20 @@ object BackupExporter {
             LogUtils.i(TAG, "    -> filter keywords count=${it.size}")
         }
 
-        LogUtils.i(TAG, "[3/4] 收集用户账号 (Room)")
+        LogUtils.i(TAG, "[3/5] 收集用户账号 (Room)")
         val users = UserManager.getUserList().toList().also {
             LogUtils.i(TAG, "    -> users count=${it.size}")
         }
 
-        LogUtils.i(TAG, "[4/4] 当前激活账号索引")
+        LogUtils.i(TAG, "[4/5] 收藏版面 (board_bookmark.json)")
+        val boardBookmarksJson = readBoardBookmarksFile(context)
+        if (boardBookmarksJson != null) {
+            LogUtils.i(TAG, "    -> board_bookmark.json 内容长度=${boardBookmarksJson.length}")
+        } else {
+            LogUtils.i(TAG, "    -> board_bookmark.json 不存在或读取失败")
+        }
+
+        LogUtils.i(TAG, "[5/5] 当前激活账号索引")
         val activeIndex = try {
             UserManager.getActiveIndex()
         } catch (t: Throwable) {
@@ -76,10 +86,18 @@ object BackupExporter {
             this.filterUsers = filterUsers
             this.filterKeywords = filterKeywords
             this.users = users
+            this.boardBookmarks = boardBookmarksJson
             this.activeUserIndex = activeIndex
             this.appVersionName = pkgInfo?.versionName
             this.appVersionCode = pkgInfo?.versionCode ?: 0
         }
+    }
+
+    private fun readBoardBookmarksFile(context: Context): String? {
+        val file = File(context.filesDir, "board_bookmark.json")
+        return if (file.exists()) {
+            runCatching { Files.readFile(file) }.getOrNull()
+        } else null
     }
 
     private fun collectWhitelistedSettings(): Map<String, Any?> {

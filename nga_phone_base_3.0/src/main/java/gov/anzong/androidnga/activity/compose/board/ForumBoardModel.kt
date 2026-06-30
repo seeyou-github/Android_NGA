@@ -116,6 +116,13 @@ class ForumBoardModel {
         return 0
     }
 
+    fun reloadBookmarkBoard() {
+        val context = ContextUtils.getContext()
+        val fresh = ForumBoardRepository.loadBookmarkBoardList(context)
+        bookmarkBoard.children?.clear()
+        bookmarkBoard.children?.addAll(fresh.children ?: emptyList())
+    }
+
     fun removeAllBookmarkBoard(): Int? {
         return bookmarkBoard.children?.let {
             it.clear()

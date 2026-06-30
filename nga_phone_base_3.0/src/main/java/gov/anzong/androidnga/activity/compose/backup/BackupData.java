@@ -20,7 +20,10 @@ public class BackupData {
 
     public int activeUserIndex;
 
-    public static final int CURRENT_SCHEMA_VERSION = 1;
+    /** Raw JSON of board bookmark list (List&lt;BoardEntity&gt;) */
+    public String boardBookmarks;
+
+    public static final int CURRENT_SCHEMA_VERSION = 2;
 
     public BackupData() {
         this.schemaVersion = CURRENT_SCHEMA_VERSION;
@@ -29,6 +32,7 @@ public class BackupData {
         this.filterUsers = new java.util.ArrayList<>();
         this.filterKeywords = new java.util.ArrayList<>();
         this.users = new java.util.ArrayList<>();
+        this.boardBookmarks = null;
         this.activeUserIndex = 0;
         this.appVersionName = null;
         this.appVersionCode = 0;

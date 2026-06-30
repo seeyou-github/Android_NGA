@@ -5,11 +5,14 @@ import android.content.SharedPreferences
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONException
 import com.justwent.androidnga.bu.UserManager
+import gov.anzong.androidnga.activity.compose.board.ForumBoardViewModel
 import gov.anzong.androidnga.activity.compose.filter.FilterKeyword
 import gov.anzong.androidnga.activity.compose.filter.FilterManager
 import gov.anzong.androidnga.base.util.PreferenceUtils
+import gov.anzong.androidnga.base.utils.Files
 import gov.anzong.androidnga.common.util.LogUtils
 import sp.phone.common.User
+import java.io.File
 import java.io.InputStream
 
 object BackupImporter {
@@ -108,6 +111,10 @@ object BackupImporter {
         runSafely(TAG, "users") {
             applyUsers(payload.users, payload.activeUserIndex)
         }?.let { errors.add("users: $it") }
+
+        runSafely(TAG, "boardBookmarks") {
+            applyBoardBookmarks(context, payload.boardBookmarks, overwrite)
+        }?.let { errors.add("boardBookmarks: $it") }
 
         if (errors.isNotEmpty()) {
             val msg = "部分子模块导入失败：${errors.joinToString("; ")}"
@@ -219,6 +226,24 @@ object BackupImporter {
             runCatching { FilterManager.addFilterWord(kw) }
                 .onFailure { LogUtils.e(TAG, "        添加 filter keyword 失败: $kw: ${it.message}", it) }
         }
+    }
+
+    private fun applyBoardBookmarks(context: Context, boardBookmarksJson: String?, overwrite: Boolean) {
+        if (boardBookmarksJson.isNullOrBlank()) {
+            LogUtils.i(TAG, "        备份中无收藏版面数据，跳过")
+            return
+        }
+        val file = File(context.filesDir, "board_bookmark.json")
+        if (!overwrite && file.exists()) {
+            LogUtils.i(TAG, "        跳过（本地已有收藏且 overwrite=false）")
+            return
+        }
+        runCatching {
+            Files.writeFile(file, boardBookmarksJson)
+            LogUtils.i(TAG, "        成功写入 board_bookmark.json (${boardBookmarksJson.length} 字节)")
+            ForumBoardViewModel.reloadBookmarkBoard()
+            LogUtils.i(TAG, "        已刷新内存中收藏版面数据")
+        }.onFailure { LogUtils.e(TAG, "        写入 board_bookmark.json 失败: ${it.message}", it) }
     }
 
     private fun applyUsers(users: List<User>, activeIndex: Int) {
