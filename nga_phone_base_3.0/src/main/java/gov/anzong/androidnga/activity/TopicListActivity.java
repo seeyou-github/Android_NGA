@@ -99,6 +99,7 @@ public class TopicListActivity extends BaseActivity {
             }
             Bundle bundle = new Bundle();
             bundle.putParcelable(ParamKey.KEY_PARAM, mRequestParam);
+            bundle.putBoolean("hide_fab", getIntent().getBooleanExtra("hide_fab", false));
             fragment.setArguments(bundle);
             fm.beginTransaction().replace(android.R.id.content, fragment).commit();
         }

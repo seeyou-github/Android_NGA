@@ -25,9 +25,16 @@ public class ArticlePagerAdapter extends FragmentStatePagerAdapter {
 
     private List<String> mPageIndexList;
 
+    private boolean mHideFab;
+
     public ArticlePagerAdapter(FragmentManager fm, ArticleListParam param) {
+        this(fm, param, false);
+    }
+
+    public ArticlePagerAdapter(FragmentManager fm, ArticleListParam param, boolean hideFab) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mRequestParam = param;
+        mHideFab = hideFab;
     }
 
     @Override
@@ -35,6 +42,9 @@ public class ArticlePagerAdapter extends FragmentStatePagerAdapter {
         Fragment fragment = new ArticleListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ParamKey.KEY_PARAM, getRequestParam(position));
+        if (mHideFab) {
+            bundle.putBoolean("hide_fab", true);
+        }
         fragment.setArguments(bundle);
         return fragment;
     }

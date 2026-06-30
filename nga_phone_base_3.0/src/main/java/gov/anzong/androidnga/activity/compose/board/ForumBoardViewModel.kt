@@ -83,6 +83,7 @@ object ForumBoardViewModel : ViewModel() {
             .withInt(ParamKey.KEY_STID, stid)
             .withString(ParamKey.BOARD_HEAD, board.head)
             .withString(ParamKey.KEY_TITLE, board.name)
+            .withBoolean("hide_fab", true)
             .navigation()
         // todo 先临时放在这里，后面再统一定时处理
         requestRemoteBoardList()

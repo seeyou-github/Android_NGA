@@ -78,6 +78,8 @@ public class ArticleTabFragment extends BaseRxFragment {
 
     private int mReplyCount;
 
+    private boolean mHideFab;
+
     private ScrollAwareFamBehavior mBehavior;
 
     @Override
@@ -86,6 +88,7 @@ public class ArticleTabFragment extends BaseRxFragment {
         Bundle args = getArguments();
         if (args != null) {
             mRequestParam = getArguments().getParcelable(ParamKey.KEY_PARAM);
+            mHideFab = args.getBoolean("hide_fab", false);
         }
 
         ArticleShareViewModel viewModel = getActivityViewModel();
@@ -114,8 +117,7 @@ public class ArticleTabFragment extends BaseRxFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        Bundle args = getArguments();
-        if (args != null && args.getBoolean("hide_fab", false)) {
+        if (mHideFab) {
             mFam.setVisibility(View.GONE);
         }
         if (ThemeManager.getInstance().hasCustomTheme()) {
@@ -124,23 +126,27 @@ public class ArticleTabFragment extends BaseRxFragment {
             mTabLayout.setBackgroundColor(topBarColor);
         }
         updateFloatingMenu();
-        mPagerAdapter = new ArticlePagerAdapter(getChildFragmentManager(), mRequestParam);
+        mPagerAdapter = new ArticlePagerAdapter(getChildFragmentManager(), mRequestParam, mHideFab);
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                mBehavior.animateIn(mFam);
-                super.onPageSelected(position);
-            }
-        });
+        if (!mHideFab) {
+            mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    mBehavior.animateIn(mFam);
+                    super.onPageSelected(position);
+                }
+            });
+        }
 
         mTabLayout.setTabOnScreenLimit(1);
         mTabLayout.setUpWithViewPager(mViewPager);
 
-        mFam.getAddFloatingActionButton().setOnLongClickListener(v -> {
-            mBehavior.animateOut(mFam);
-            return true;
-        });
+        if (!mHideFab) {
+            mFam.getAddFloatingActionButton().setOnLongClickListener(v -> {
+                mBehavior.animateOut(mFam);
+                return true;
+            });
+        }
         super.onViewCreated(view, savedInstanceState);
     }
 

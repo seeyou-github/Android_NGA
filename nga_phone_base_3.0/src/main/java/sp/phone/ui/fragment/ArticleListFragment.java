@@ -255,6 +255,10 @@ public class ArticleListFragment extends BaseMvpFragment<ArticleListPresenter> i
             mLoadingView.setBackgroundColor(ThemeManager.getInstance().getCustomBackgroundColor(view.getContext()));
         }
         mArticleAdapter = new ArticleListAdapter(getContext(),getActivity().getSupportFragmentManager());
+        Bundle args = getArguments();
+        if (args != null && args.getBoolean("hide_fab", false)) {
+            mArticleAdapter.setShowUserInfo(false);
+        }
         mArticleAdapter.setSupportListener(mSupportListener);
         mArticleAdapter.setOpposeListener(mOpposeListener);
         mArticleAdapter.setMenuTogglerListener(mMenuTogglerListener);

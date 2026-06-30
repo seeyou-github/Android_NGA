@@ -313,6 +313,12 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     private boolean mWifiConnected;
 
+    private boolean mShowUserInfo = true;
+
+    public void setShowUserInfo(boolean show) {
+        mShowUserInfo = show;
+    }
+
     public class ArticleViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tv_nickName)
@@ -468,7 +474,12 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         holder.postTimeTv.setText(row.getPostdate());
         holder.scoreTv.setText(MessageFormat.format("{0}", row.getScore()));
 
-        holder.detailTv.setText(String.format("级别：%s   威望：%s   发帖：%s", row.getMemberGroup(), row.getReputation(), row.getPostCount()));
+        if (mShowUserInfo) {
+            holder.detailTv.setText(String.format("级别：%s   威望：%s   发帖：%s", row.getMemberGroup(), row.getReputation(), row.getPostCount()));
+            holder.detailTv.setVisibility(View.VISIBLE);
+        } else {
+            holder.detailTv.setVisibility(View.GONE);
+        }
 
     }
 

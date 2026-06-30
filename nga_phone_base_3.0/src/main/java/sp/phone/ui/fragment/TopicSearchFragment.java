@@ -237,10 +237,15 @@ public class TopicSearchFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         ThreadPageInfo info = (ThreadPageInfo) view.getTag();
-        handleClickEvent(view.getContext(), info, mRequestParam);
+        boolean hideFab = getArguments() != null && getArguments().getBoolean("hide_fab", false);
+        handleClickEvent(view.getContext(), info, mRequestParam, hideFab);
     }
 
     public static void handleClickEvent(Context context, ThreadPageInfo info, TopicListParam requestParam) {
+        handleClickEvent(context, info, requestParam, false);
+    }
+
+    public static void handleClickEvent(Context context, ThreadPageInfo info, TopicListParam requestParam, boolean hideFab) {
 
         if (info.isMirrorBoard()) {
             ARouterUtils.build(ARouterConstants.ACTIVITY_TOPIC_LIST)
@@ -271,6 +276,9 @@ public class TopicSearchFragment extends BaseFragment implements View.OnClickLis
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putParcelable(ParamKey.KEY_PARAM, param);
+            if (hideFab) {
+                bundle.putBoolean("hide_fab", true);
+            }
             intent.putExtras(bundle);
             intent.setClass(context, PhoneConfiguration.getInstance().articleActivityClass);
             context. startActivity(intent);
