@@ -182,6 +182,7 @@
             android:label="@string/title_about" />
 
         <activity android:name=".activity.TopicCacheActivity" android:label="我的缓存" />
+        <activity android:name=".activity.compose.theme.ThemeSettingsActivity" android:label="主题设置" />
         <activity android:name=".activity.ArticleCacheActivity" />
 
         <provider

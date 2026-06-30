@@ -56,6 +56,59 @@ public class ThemeManager implements SharedPreferences.OnSharedPreferenceChangeL
         mWebViewTheme = null;
     }
 
+    @ColorInt
+    public int getCustomTextColor(Context context) {
+        SharedPreferences prefs = ContextUtils.getSharedPreferences(PreferenceKey.PERFERENCE);
+        String hex = prefs.getString("theme_text_color", null);
+        if (hex != null) {
+            try {
+                return android.graphics.Color.parseColor(hex);
+            } catch (Exception ignored) { }
+        }
+        return getPrimaryColor(context);
+    }
+
+    @ColorInt
+    public int getCustomTopBarColor(Context context) {
+        SharedPreferences prefs = ContextUtils.getSharedPreferences(PreferenceKey.PERFERENCE);
+        String hex = prefs.getString("theme_top_bar_color", null);
+        if (hex != null) {
+            try {
+                return android.graphics.Color.parseColor(hex);
+            } catch (Exception ignored) { }
+        }
+        return getPrimaryColor(context);
+    }
+
+    @ColorInt
+    public int getCustomBackgroundColor(Context context) {
+        SharedPreferences prefs = ContextUtils.getSharedPreferences(PreferenceKey.PERFERENCE);
+        String hex = prefs.getString("theme_bg_color", null);
+        if (hex != null) {
+            try {
+                return android.graphics.Color.parseColor(hex);
+            } catch (Exception ignored) { }
+        }
+        return ContextCompat.getColor(context, R.color.background_color);
+    }
+
+    @ColorInt
+    public int getCustomAccentColor(Context context) {
+        SharedPreferences prefs = ContextUtils.getSharedPreferences(PreferenceKey.PERFERENCE);
+        String hex = prefs.getString("theme_accent_color", null);
+        if (hex != null) {
+            try {
+                return android.graphics.Color.parseColor(hex);
+            } catch (Exception ignored) { }
+        }
+        return getAccentColor(context);
+    }
+
+    public boolean hasCustomTheme() {
+        SharedPreferences prefs = ContextUtils.getSharedPreferences(PreferenceKey.PERFERENCE);
+        return prefs.getString("theme_text_color", null) != null;
+    }
+
     private static class ThemeManagerHolder {
 
         private static ThemeManager sInstance = new ThemeManager();
@@ -65,7 +118,7 @@ public class ThemeManager implements SharedPreferences.OnSharedPreferenceChangeL
         mContext = ContextUtils.getContext();
         SharedPreferences sp = mContext.getSharedPreferences(PreferenceKey.PERFERENCE, Context.MODE_PRIVATE);
         sp.registerOnSharedPreferenceChangeListener(this);
-        mNightMode = sp.getBoolean(PreferenceKey.NIGHT_MODE, false);
+        mNightMode = sp.getBoolean(PreferenceKey.NIGHT_MODE, true);
         mThemeIndex = Integer.parseInt(sp.getString(PreferenceKey.MATERIAL_THEME, "1"));
         mNightModeFollowSystem = sp.getBoolean(PreferenceKey.KEY_NIGHT_MODE_FOLLOW_SYSTEM, false);
         applyDayNightDelay(0);
@@ -124,6 +177,9 @@ public class ThemeManager implements SharedPreferences.OnSharedPreferenceChangeL
 
     @ColorInt
     public int getPrimaryColor(Context context) {
+        if (hasCustomTheme()) {
+            return getCustomTopBarColor(context);
+        }
         context.getTheme().resolveAttribute(android.R.attr.colorPrimary, mTypedValue, true);
         return ContextCompat.getColor(context, mTypedValue.resourceId);
     }

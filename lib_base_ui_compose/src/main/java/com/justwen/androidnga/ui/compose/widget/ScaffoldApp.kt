@@ -38,21 +38,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.justwen.androidnga.ui.compose.theme.readableOn
 
 @Composable
 fun FloatingActionButton(fabClick: (() -> Unit)? = null) {
     if (fabClick != null) {
+        val onPrimary = MaterialTheme.colors.primary.readableOn(MaterialTheme.colors.primary)
         FloatingActionButton(
             modifier = Modifier.navigationBarsPadding(),
             backgroundColor = MaterialTheme.colors.primary,
             onClick = { fabClick.invoke() }) {
-            Icon(Icons.Default.Add, tint = Color.White, contentDescription = "Add")
+            Icon(Icons.Default.Add, tint = onPrimary, contentDescription = "Add")
         }
     }
 }
 
 @Composable
-fun OptionActionMenu(optionActions: List<OptionMenuData>? = null) {
+fun OptionActionMenu(optionActions: List<OptionMenuData>? = null, tint: Color = Color.White) {
     if (optionActions == null) {
         return
     }
@@ -72,7 +74,7 @@ fun OptionActionMenu(optionActions: List<OptionMenuData>? = null) {
                 Icon(
                     painter = painterResource(it.icon!!),
                     contentDescription = "",
-                    tint = Color.White
+                    tint = tint
                 )
             }
 
@@ -80,7 +82,7 @@ fun OptionActionMenu(optionActions: List<OptionMenuData>? = null) {
         if (hideItems.isNotEmpty()) {
             var expanded by remember { mutableStateOf(false) }
             IconButton(onClick = { expanded = !expanded }) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "", tint = Color.White)
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = "", tint = tint)
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     hideItems.forEach(action = {
                         DropdownMenuItem(onClick = {
@@ -102,6 +104,7 @@ fun TopAppBarEx(
     topAppBarData: TopAppBarData,
 ) {
     val statusBarPadding = WindowInsets.statusBars.asPaddingValues()
+    val onPrimary = MaterialTheme.colors.primary.readableOn(MaterialTheme.colors.primary)
 
     Surface(
         color = MaterialTheme.colors.primary,
@@ -119,7 +122,7 @@ fun TopAppBarEx(
                 IconButton(onClick = { topAppBarData.navigationIconAction?.invoke() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        tint = Color.White,
+                        tint = onPrimary,
                         contentDescription = "Localized description"
                     )
                 }
@@ -133,14 +136,14 @@ fun TopAppBarEx(
                 if (topAppBarData.customTopBar == null) {
                     Text(
                         text = topAppBarData.title,
-                        color = Color.White,
+                        color = onPrimary,
                         style = MaterialTheme.typography.h6
                     )
                 } else {
                     topAppBarData.customTopBar!!.invoke()
                 }
             }
-            OptionActionMenu(optionActions = topAppBarData.optionMenuData)
+            OptionActionMenu(topAppBarData.optionMenuData, onPrimary)
         }
     }
 }

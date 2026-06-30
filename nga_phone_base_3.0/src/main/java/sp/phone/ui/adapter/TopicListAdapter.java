@@ -53,8 +53,18 @@ public class TopicListAdapter extends BaseAppendableAdapter<ThreadPageInfo, Topi
         holder.itemView.setTag(info);
 
         handleJsonList(holder, info);
-        if (!PhoneConfiguration.getInstance().useSolidColorBackground()) {
-            holder.itemView.setBackgroundResource(ThemeManager.getInstance().getBackgroundColor(position));
+        ThemeManager tm = ThemeManager.getInstance();
+        Context context = holder.itemView.getContext();
+        if (tm.hasCustomTheme()) {
+            int bgColor = tm.getCustomBackgroundColor(context);
+            holder.itemView.setBackgroundColor(bgColor);
+            int textColor = tm.getCustomTextColor(context);
+            holder.title.setTextColor(textColor);
+            holder.author.setTextColor(textColor);
+            holder.lastReply.setTextColor(textColor);
+            holder.num.setTextColor(textColor);
+        } else if (!PhoneConfiguration.getInstance().useSolidColorBackground()) {
+            holder.itemView.setBackgroundResource(tm.getBackgroundColor(position));
         }
     }
 

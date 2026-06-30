@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.justwen.androidnga.ui.compose.theme.readableOn
 import com.justwent.androidnga.bu.UserManager
 import gov.anzong.androidnga.R
 import sp.phone.common.User
@@ -73,7 +74,7 @@ fun ProfileTab(
                     item(key = "divider_$index") {
                         HorizontalDivider(
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = Color.LightGray,
+                            color = MaterialTheme.colors.onBackground.copy(alpha = 0.12f),
                         )
                     }
                 }
@@ -101,13 +102,13 @@ private fun ProfileMenuRow(item: ProfileMenuItem) {
         Icon(
             painter = painterResource(id = item.iconResId),
             contentDescription = item.label,
-            tint = Color.DarkGray,
+            tint = MaterialTheme.colors.onBackground.copy(alpha = 0.85f),
             modifier = Modifier.size(24.dp),
         )
         Spacer(modifier = Modifier.size(16.dp))
         androidx.compose.material.Text(
             text = item.label,
-            color = Color.DarkGray,
+            color = MaterialTheme.colors.onBackground.copy(alpha = 0.85f),
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             modifier = Modifier.weight(1f),
@@ -125,6 +126,7 @@ private fun ProfileMenuRow(item: ProfileMenuItem) {
 
 @Composable
 private fun UserAvatarView(user: User? = null, userCount: Int = 0) {
+    val onHeaderColor = MaterialTheme.colors.primary.readableOn(MaterialTheme.colors.primary)
     val avatarPainter: Painter
     val avatarColorFilter: ColorFilter?
     if (user?.avatarUrl?.isNotEmpty() == true) {
@@ -135,7 +137,7 @@ private fun UserAvatarView(user: User? = null, userCount: Int = 0) {
         avatarColorFilter = null
     } else {
         avatarPainter = painterResource(id = R.drawable.drawerdefaulticon)
-        avatarColorFilter = ColorFilter.tint(Color.White)
+        avatarColorFilter = ColorFilter.tint(onHeaderColor)
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
@@ -161,14 +163,14 @@ private fun UserAvatarView(user: User? = null, userCount: Int = 0) {
         androidx.compose.material.Text(
             text = msg,
             modifier = Modifier.padding(top = 6.dp),
-            color = Color.White,
+            color = onHeaderColor,
             fontSize = 13.sp
         )
         androidx.compose.material.Text(
             text = subMsg,
             maxLines = 1,
             modifier = Modifier.padding(top = 2.dp),
-            color = Color.White,
+            color = onHeaderColor,
             fontSize = 12.sp
         )
     }
@@ -176,6 +178,7 @@ private fun UserAvatarView(user: User? = null, userCount: Int = 0) {
 
 @Composable
 fun UserHeaderView(onAvatarClick: () -> Unit = {}) {
+    val onHeaderColor = MaterialTheme.colors.primary.readableOn(MaterialTheme.colors.primary)
     var activeIndex by remember { mutableIntStateOf(0) }
     val userList = UserManager.getUserListLiveData().observeAsState(emptyList())
     val userCount = userList.value.size
@@ -221,7 +224,7 @@ fun UserHeaderView(onAvatarClick: () -> Unit = {}) {
                     }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_action_next_item),
-                        tint = Color.White,
+                        tint = onHeaderColor,
                         contentDescription = ""
                     )
                 }

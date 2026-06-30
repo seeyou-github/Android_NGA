@@ -20,13 +20,13 @@ import gov.anzong.androidnga.activity.BaseActivity;
 import gov.anzong.androidnga.activity.LauncherSubActivity;
 import gov.anzong.androidnga.activity.SettingsActivity;
 import gov.anzong.androidnga.activity.compose.TemplateComposeActivity;
+import gov.anzong.androidnga.activity.compose.theme.ThemeSettingsActivity;
 import gov.anzong.androidnga.base.util.ContextUtils;
 import gov.anzong.androidnga.base.util.ThreadUtils;
 import gov.anzong.androidnga.base.util.ToastUtils;
 import gov.anzong.androidnga.common.PreferenceKey;
 import gov.anzong.androidnga.ui.fragment.BasePreferenceFragment;
 import sp.phone.common.UserManagerImpl;
-import sp.phone.theme.ThemeManager;
 import sp.phone.ui.fragment.dialog.AlertDialogFragment;
 
 public class SettingsFragment extends BasePreferenceFragment implements Preference.OnPreferenceChangeListener {
@@ -39,14 +39,15 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
     }
 
     private void configPreference() {
-        findPreference(PreferenceKey.NIGHT_MODE).setEnabled(!ThemeManager.getInstance().isNightModeFollowSystem());
-        findPreference(PreferenceKey.MATERIAL_THEME).setEnabled(!ThemeManager.getInstance().isNightMode());
-
         findPreference(PreferenceKey.KEY_CLEAR_CACHE).setOnPreferenceClickListener(preference -> {
             showClearCacheDialog();
             return true;
         });
-
+        findPreference(PreferenceKey.KEY_THEME_SETTINGS).setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), ThemeSettingsActivity.class);
+            startActivity(intent);
+            return true;
+        });
     }
 
     private void showClearCacheDialog() {
@@ -85,27 +86,6 @@ public class SettingsFragment extends BasePreferenceFragment implements Preferen
             preference.setSummary(((ListPreference) preference).getEntry());
         }
 
-        String key = preference.getKey();
-        switch (key) {
-            case PreferenceKey.NIGHT_MODE:
-                SettingsActivity.sRecreated = true;
-                break;
-            case PreferenceKey.KEY_NIGHT_MODE_FOLLOW_SYSTEM:
-                findPreference(PreferenceKey.NIGHT_MODE).setEnabled(Boolean.FALSE.equals(newValue));
-                SettingsActivity.sRecreated = true;
-                break;
-            case PreferenceKey.MATERIAL_THEME:
-                SettingsActivity.sRecreated = true;
-                ThreadUtils.postOnMainThreadDelay(() -> {
-                    if (getActivity() != null) {
-                        getActivity().recreate();
-                    }
-                }, 200);
-                break;
-            default:
-                break;
-
-        }
         return true;
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -49,10 +50,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         mConfig = PhoneConfiguration.getInstance();
         updateThemeUi();
         super.onCreate(savedInstanceState);
-        ThemeManager.getInstance().initializeWebTheme(this);
+        ThemeManager tm = ThemeManager.getInstance();
+        tm.initializeWebTheme(this);
+
+        if (tm.hasCustomTheme()) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(tm.getCustomBackgroundColor(this)));
+            View contentView = findViewById(android.R.id.content);
+            if (contentView != null) {
+                contentView.setBackgroundColor(tm.getCustomBackgroundColor(this));
+            }
+        }
 
         try {
-            if (ThemeManager.getInstance().isNightMode() && !mComposeEnabled) {
+            if (tm.isNightMode() && !mComposeEnabled) {
                 getWindow().setNavigationBarColor(ContextUtils.getColor(R.color.background_color));
             }
         } catch (Exception e) {
@@ -68,6 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void enableEdge2Edge() {
         View contentView = findViewById(android.R.id.content);
         if (mToolbarEnabled && !mComposeEnabled && contentView != null) {
+            ThemeManager tm = ThemeManager.getInstance();
             ViewCompat.setOnApplyWindowInsetsListener(contentView, new OnApplyWindowInsetsListener() {
                 @NonNull
                 @Override
@@ -78,7 +89,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         View statusView = new View(contentView.getContext());
                         statusView.setId(R.id.status_bar);
                         statusView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, stateBars.top));
-                        statusView.setBackgroundColor(ThemeManager.getInstance().getPrimaryColor(contentView.getContext()));
+                        statusView.setBackgroundColor(tm.getPrimaryColor(contentView.getContext()));
                         parent.addView(statusView, 0);
 
                         Insets navaBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars());

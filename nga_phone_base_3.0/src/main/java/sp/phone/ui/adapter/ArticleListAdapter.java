@@ -435,8 +435,18 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             return;
         }
 
-        if (!PhoneConfiguration.getInstance().useSolidColorBackground()) {
-            holder.itemView.setBackgroundResource(ThemeManager.getInstance().getBackgroundColor(position));
+        if (mThemeManager.hasCustomTheme()) {
+            int bgColor = mThemeManager.getCustomBackgroundColor(mContext);
+            holder.itemView.setBackgroundColor(bgColor);
+            int textColor = mThemeManager.getCustomTextColor(mContext);
+            holder.nickNameTV.setTextColor(textColor);
+            holder.floorTv.setTextColor(textColor);
+            holder.postTimeTv.setTextColor(textColor);
+            holder.scoreTv.setTextColor(textColor);
+            holder.detailTv.setTextColor(textColor);
+            holder.contentTextView.setTextColor(textColor);
+        } else if (!PhoneConfiguration.getInstance().useSolidColorBackground()) {
+            holder.itemView.setBackgroundResource(mThemeManager.getBackgroundColor(position));
         }
 
         holder.supportBtn.setTag(row);
@@ -450,7 +460,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         onBindDeviceType(holder.clientIv, row);
         onBindContentView(holder, row, position);
 
-        int fgColor = mThemeManager.getAccentColor(mContext);
+        int fgColor = mThemeManager.hasCustomTheme() ? mThemeManager.getCustomAccentColor(mContext) : mThemeManager.getAccentColor(mContext);
         FunctionUtils.handleNickName(row, fgColor, holder.nickNameTV, mTopicOwner, mContext);
 
         holder.floorTv.setText(MessageFormat.format("[{0} 楼]", String.valueOf(row.getLou())));

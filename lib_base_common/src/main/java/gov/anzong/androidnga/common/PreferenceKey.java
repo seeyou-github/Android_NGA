@@ -77,6 +77,8 @@ public class PreferenceKey {
 
     public static final String KEY_NIGHT_MODE_FOLLOW_SYSTEM = "key_night_mode_follow_system";
 
+    public static final String KEY_THEME_SETTINGS = "theme_settings";
+
     public static final String VERSION_MAJOR_CODE = "version_major_code";
 
     public static final String VERSION_MIRROR_CODE = "version_mirror_code";

@@ -13,7 +13,6 @@ object BackupWhitelistKeys {
         "showColortxt",
         "showiconmode",
         "adjust_size",
-        "material_theme",
         "bottom_tab",
         "left_hand",
         "sort_by_post",
@@ -25,7 +24,6 @@ object BackupWhitelistKeys {
         "avatar_size",
         "emoticon_size",
         "use_solid_color_bg",
-        "key_night_mode_follow_system",
         "key_webview_zoom_size",
         "key_preload_board_version",
         "pref_load_avatar_strategy",
@@ -37,6 +35,10 @@ object BackupWhitelistKeys {
         "previous_version_code",
         "webview_data_index",
         "check_in_last_time",
+        "theme_text_color",
+        "theme_top_bar_color",
+        "theme_bg_color",
+        "theme_accent_color",
     )
 
     val GLOBAL_SETTINGS_KEYS_EXCLUDED: Set<String> = setOf(

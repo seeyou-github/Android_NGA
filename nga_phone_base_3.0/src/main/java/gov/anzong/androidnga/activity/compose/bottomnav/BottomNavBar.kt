@@ -17,6 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.MaterialTheme
+import com.justwen.androidnga.ui.compose.theme.isLight
+import com.justwen.androidnga.ui.compose.theme.readableOn
 import gov.anzong.androidnga.R
 
 data class BottomTabItem(
@@ -41,10 +43,14 @@ fun BottomNavBar(
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit,
 ) {
+    val containerColor = MaterialTheme.colors.primary
+    val onContainer = containerColor.readableOn(containerColor)
+    val accentColor = MaterialTheme.colors.primaryVariant
+
     NavigationBar(
         modifier = Modifier.height(BottomBarHeight),
-        containerColor = MaterialTheme.colors.background,
-        contentColor = MaterialTheme.colors.primary,
+        containerColor = containerColor,
+        contentColor = onContainer,
         tonalElevation = 0.dp,
         windowInsets = WindowInsets.navigationBars,
     ) {
@@ -65,11 +71,11 @@ fun BottomNavBar(
                 },
                 label = null,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colors.primary,
-                    selectedTextColor = MaterialTheme.colors.primary,
-                    unselectedIconColor = Color.Gray,
-                    unselectedTextColor = Color.Gray,
-                    indicatorColor = MaterialTheme.colors.background,
+                    selectedIconColor = accentColor,
+                    selectedTextColor = accentColor,
+                    unselectedIconColor = onContainer.copy(alpha = 0.55f),
+                    unselectedTextColor = onContainer.copy(alpha = 0.55f),
+                    indicatorColor = containerColor,
                 ),
             )
         }
