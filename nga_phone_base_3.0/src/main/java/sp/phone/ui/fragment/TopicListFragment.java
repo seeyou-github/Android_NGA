@@ -71,7 +71,7 @@ public class TopicListFragment extends TopicSearchFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateFloatingMenu();
+        mFam.setVisibility(View.GONE);
     }
 
     private void updateFloatingMenu() {
