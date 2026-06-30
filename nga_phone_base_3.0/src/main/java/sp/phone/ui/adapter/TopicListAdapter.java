@@ -60,9 +60,10 @@ public class TopicListAdapter extends BaseAppendableAdapter<ThreadPageInfo, Topi
             holder.itemView.setBackgroundColor(bgColor);
             int textColor = tm.getCustomTextColor(context);
             holder.title.setTextColor(textColor);
-            holder.author.setTextColor(textColor);
-            holder.lastReply.setTextColor(textColor);
             holder.num.setTextColor(textColor);
+            int secondaryColor = tm.isNightMode() ? 0xFFCFCFCF : 0xFF888888;
+            holder.author.setTextColor(secondaryColor);
+            holder.lastReply.setTextColor(secondaryColor);
         } else if (!PhoneConfiguration.getInstance().useSolidColorBackground()) {
             holder.itemView.setBackgroundResource(tm.getBackgroundColor(position));
         }

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import gov.anzong.androidnga.Utils;
 import gov.anzong.androidnga.base.logger.Logger;
+import gov.anzong.androidnga.base.util.ContextUtils;
 import gov.anzong.androidnga.core.HtmlConvertFactory;
 import gov.anzong.androidnga.common.util.NLog;
 import gov.anzong.androidnga.core.data.AttachmentData;
@@ -135,6 +136,12 @@ public class ArticleConvertFactory {
         }
         List<String> imageUrls = new ArrayList<>();
         String ngaHtml = HtmlConvertFactory.convert(buildHtmlData(row), imageUrls);
+        if (ThemeManager.getInstance().hasCustomTheme() && ngaHtml.contains("</head>")) {
+            int textColor = ThemeManager.getInstance().getCustomTextColor(ContextUtils.getContext());
+            String hexColor = String.format("#%06X", 0xFFFFFF & textColor);
+            String colorOverride = String.format("<style>body{color:%s!important}</style>", hexColor);
+            ngaHtml = ngaHtml.replace("</head>", colorOverride + "</head>");
+        }
         row.getImageUrls().addAll(imageUrls);
         row.setFormattedHtmlData(ngaHtml);
     }

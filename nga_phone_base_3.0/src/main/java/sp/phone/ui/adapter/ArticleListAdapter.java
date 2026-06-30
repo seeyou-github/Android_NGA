@@ -441,10 +441,11 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             int textColor = mThemeManager.getCustomTextColor(mContext);
             holder.nickNameTV.setTextColor(textColor);
             holder.floorTv.setTextColor(textColor);
-            holder.postTimeTv.setTextColor(textColor);
             holder.scoreTv.setTextColor(textColor);
-            holder.detailTv.setTextColor(textColor);
             holder.contentTextView.setTextColor(textColor);
+            int secondaryColor = mThemeManager.isNightMode() ? 0xFFCFCFCF : 0xFF888888;
+            holder.postTimeTv.setTextColor(secondaryColor);
+            holder.detailTv.setTextColor(secondaryColor);
         } else if (!PhoneConfiguration.getInstance().useSolidColorBackground()) {
             holder.itemView.setBackgroundResource(mThemeManager.getBackgroundColor(position));
         }
