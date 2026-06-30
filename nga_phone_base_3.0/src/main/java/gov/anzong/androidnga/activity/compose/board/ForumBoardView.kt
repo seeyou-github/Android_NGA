@@ -144,9 +144,7 @@ fun ForumBoardBookmarkContent(bookmark: BoardEntity, forumBoardViewModel: ForumB
 
     Column (Modifier.fillMaxSize()) {
 
-        if (UserManager.getUserList().size == 1) {
-            Text(modifier = Modifier.padding(8.dp), text = "建议登录多个账号，可有效改善跳转系统浏览器问题")
-        }
+ 
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(maxColumn),
