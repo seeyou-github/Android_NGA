@@ -53,11 +53,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
+        super.onResume();
         if (mIsNightMode != ThemeManager.getInstance().isNightMode()) {
             finish();
             startActivity(getIntent());
+        } else if (ThemeManager.getInstance().consumeThemeDirty()) {
+            recreate();
         }
-        super.onResume();
     }
 
     private void initView() {

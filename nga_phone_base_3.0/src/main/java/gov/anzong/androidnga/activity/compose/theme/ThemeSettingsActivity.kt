@@ -70,10 +70,18 @@ class ThemeSettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                ThemeSettingsPage(
-                    onNavigateBack = { finish() },
-                    onApplyTheme = { recreate() }
-                )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background,
+                ) {
+                    ThemeSettingsPage(
+                        onNavigateBack = { finish() },
+                        onApplyTheme = {
+                            ThemeManager.getInstance().markThemeDirty()
+                            recreate()
+                        },
+                    )
+                }
             }
         }
     }

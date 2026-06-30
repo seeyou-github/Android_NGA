@@ -45,7 +45,8 @@ fun BottomNavBar(
 ) {
     val containerColor = MaterialTheme.colors.primary
     val onContainer = containerColor.readableOn(containerColor)
-    val accentColor = MaterialTheme.colors.primaryVariant
+    val isNight = containerColor.isLight().not()
+    val selectedIconColor = if (isNight) Color(0xFFCFCFCF) else Color.Black
 
     NavigationBar(
         modifier = Modifier.height(BottomBarHeight),
@@ -71,10 +72,10 @@ fun BottomNavBar(
                 },
                 label = null,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = accentColor,
-                    selectedTextColor = accentColor,
-                    unselectedIconColor = onContainer.copy(alpha = 0.55f),
-                    unselectedTextColor = onContainer.copy(alpha = 0.55f),
+                    selectedIconColor = selectedIconColor,
+                    selectedTextColor = selectedIconColor,
+                    unselectedIconColor = onContainer.copy(alpha = 0.35f),
+                    unselectedTextColor = onContainer.copy(alpha = 0.35f),
                     indicatorColor = containerColor,
                 ),
             )

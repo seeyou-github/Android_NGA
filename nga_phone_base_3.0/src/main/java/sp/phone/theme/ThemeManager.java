@@ -42,6 +42,8 @@ public class ThemeManager implements SharedPreferences.OnSharedPreferenceChangeL
 
     private boolean mNightModeFollowSystem;
 
+    private boolean mThemeDirty;
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(PreferenceKey.NIGHT_MODE)) {
@@ -107,6 +109,16 @@ public class ThemeManager implements SharedPreferences.OnSharedPreferenceChangeL
     public boolean hasCustomTheme() {
         SharedPreferences prefs = ContextUtils.getSharedPreferences(PreferenceKey.PERFERENCE);
         return prefs.getString("theme_text_color", null) != null;
+    }
+
+    public void markThemeDirty() {
+        mThemeDirty = true;
+    }
+
+    public boolean consumeThemeDirty() {
+        boolean dirty = mThemeDirty;
+        mThemeDirty = false;
+        return dirty;
     }
 
     private static class ThemeManagerHolder {

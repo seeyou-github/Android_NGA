@@ -49,24 +49,30 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         mConfig = PhoneConfiguration.getInstance();
         updateThemeUi();
-        super.onCreate(savedInstanceState);
         ThemeManager tm = ThemeManager.getInstance();
+        if (tm.hasCustomTheme()) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(tm.getCustomBackgroundColor(this)));
+        }
+        super.onCreate(savedInstanceState);
         tm.initializeWebTheme(this);
 
         if (tm.hasCustomTheme()) {
-            getWindow().setBackgroundDrawable(new ColorDrawable(tm.getCustomBackgroundColor(this)));
             View contentView = findViewById(android.R.id.content);
             if (contentView != null) {
                 contentView.setBackgroundColor(tm.getCustomBackgroundColor(this));
             }
-        }
-
-        try {
-            if (tm.isNightMode() && !mComposeEnabled) {
-                getWindow().setNavigationBarColor(ContextUtils.getColor(R.color.background_color));
+            getWindow().setNavigationBarColor(tm.getCustomTopBarColor(this));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(tm.getCustomTopBarColor(this));
             }
-        } catch (Exception e) {
-            NLog.e("set navigation bar color exception occur: " + e);
+        } else {
+            try {
+                if (tm.isNightMode() && !mComposeEnabled) {
+                    getWindow().setNavigationBarColor(ContextUtils.getColor(R.color.background_color));
+                }
+            } catch (Exception e) {
+                NLog.e("set navigation bar color exception occur: " + e);
+            }
         }
         enableEdge2Edge();
     }
@@ -127,6 +133,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void setupToolbar(Toolbar toolbar) {
         if (toolbar != null && getSupportActionBar() == null) {
+            ThemeManager tm = ThemeManager.getInstance();
+            if (tm.hasCustomTheme()) {
+                toolbar.setBackgroundColor(tm.getCustomTopBarColor(this));
+            }
             setSupportActionBar(toolbar);
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
