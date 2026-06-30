@@ -134,4 +134,10 @@ class NavigationDrawerViewModel : ViewModel() {
         intent.setClass(activity, SettingsActivity::class.java)
         startActivityForResult(activity, intent, ActivityUtils.REQUEST_CODE_SETTING, null)
     }
+
+    fun startBackupPage(activity: Activity) {
+        val intent = Intent(activity, gov.anzong.androidnga.activity.compose.TemplateComposeActivity::class.java)
+        intent.putExtra("fragment", gov.anzong.androidnga.activity.compose.backup.BackupFragment::class.java.name)
+        activity.startActivity(intent)
+    }
 }

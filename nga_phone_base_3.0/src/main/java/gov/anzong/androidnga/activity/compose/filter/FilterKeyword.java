@@ -13,7 +13,7 @@ import gov.anzong.androidnga.common.base.JavaBean;
 public class FilterKeyword implements JavaBean {
     private String keyword;
 
-    @JSONField(serialize = false)
+    @JSONField(serialize = false, deserialize = false)
     private Pattern mPattern;
 
     private boolean enabled;

@@ -144,6 +144,11 @@ class NavigationDrawerFragment : BaseComposeFragment() {
                 onClick = { viewModel.startSettingsPage(requireActivity()) },
             ),
             ProfileMenuItem(
+                label = "数据导入/导出",
+                iconResId = R.drawable.ic_file_download,
+                onClick = { viewModel.startBackupPage(requireActivity()) },
+            ),
+            ProfileMenuItem(
                 label = "关于",
                 iconResId = R.drawable.ic_action_about,
                 onClick = { viewModel.startAboutNgaClient(requireActivity()) },

@@ -1,6 +1,7 @@
 package gov.anzong.androidnga.activity.compose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.justwen.androidnga.ui.compose.BaseComposeFragment
 
@@ -20,11 +21,13 @@ class TemplateComposeActivity : FragmentActivity() {
             fragment.arguments = intent.extras
             supportFragmentManager.beginTransaction().replace(android.R.id.content, fragment).commit()
         } catch (e: InstantiationException) {
-            e.printStackTrace()
+            Log.e("TemplateComposeActivity", "InstantiationException for $fragmentStr", e)
         } catch (e: IllegalAccessException) {
-            e.printStackTrace()
+            Log.e("TemplateComposeActivity", "IllegalAccessException for $fragmentStr", e)
         } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
+            Log.e("TemplateComposeActivity", "ClassNotFoundException for $fragmentStr", e)
+        } catch (e: Throwable) {
+            Log.e("TemplateComposeActivity", "Unexpected exception for $fragmentStr", e)
         }
     }
 
