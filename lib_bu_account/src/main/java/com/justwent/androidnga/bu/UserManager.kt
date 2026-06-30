@@ -101,6 +101,19 @@ object UserManager {
         addUser(user)
     }
 
+    fun replaceAllUsers(users: List<User>, activeIndex: Int) {
+        val dao = AppDatabase.getInstance().userDao()
+        dao.deleteAllUsers()
+        dao.updateUsers(*users.toTypedArray())
+        val safeIndex = if (users.isEmpty()) 0
+        else if (activeIndex < 0 || activeIndex >= users.size) 0
+        else activeIndex
+        userListLiveData.postValue(users)
+        activeUser = if (users.isEmpty()) null else users[safeIndex]
+        activeIndexLiveData.postValue(safeIndex)
+        PreferenceUtils.edit().putInt(PreferenceKey.USER_ACTIVE_INDEX, safeIndex).commit()
+    }
+
     fun removeUser(index: Int) {
         val userList = userListLiveData.value!!.toMutableList()
         val user = userList.removeAt(index)

@@ -223,38 +223,22 @@ object BackupImporter {
 
     private fun applyUsers(users: List<User>, activeIndex: Int) {
         LogUtils.i(TAG, "        收到 ${users.size} 个 user, activeIndex=$activeIndex")
-        if (users.isEmpty()) {
-            LogUtils.i(TAG, "        无 user 待写入，跳过")
+        val validUsers = users.filter { u ->
+            !u.userId.isNullOrBlank() && !u.cid.isNullOrBlank()
+        }
+        if (validUsers.isEmpty()) {
+            LogUtils.i(TAG, "        无有效的 user（缺少 uid/cid），跳过")
             return
         }
-
-        runCatching {
-            val current = UserManager.getUserList().toMutableList()
-            current.forEach { u ->
-                runCatching { UserManager.removeUser(current.indexOf(u)) }
-                    .onFailure { LogUtils.e(TAG, "        清旧 user 失败: ${u.userId}: ${it.message}", it) }
-            }
-        }.onFailure { LogUtils.e(TAG, "        清空 user 列表出错: ${it.message}", it) }
-
-        for (u in users) {
-            if (u.userId.isNullOrBlank() || u.cid.isNullOrBlank()) {
-                LogUtils.e(TAG, "        跳过缺少 uid/cid 的 user: ${u.toShortString()}")
-                continue
-            }
-            runCatching { UserManager.addUser(u) }
-                .onFailure { LogUtils.e(TAG, "        添加 user 失败: ${u.userId}: ${it.message}", it) }
+        val skipped = users.size - validUsers.size
+        if (skipped > 0) {
+            LogUtils.i(TAG, "        跳过 $skipped 个缺少 uid/cid 的 user")
         }
 
         runCatching {
-            val size = UserManager.getUserList().size
-            val safeIndex = activeIndex.coerceIn(0, if (size == 0) 0 else size - 1)
-            if (size > 0) {
-                UserManager.setActiveIndex(safeIndex)
-                LogUtils.i(TAG, "        设置 activeIndex=$safeIndex (size=$size)")
-            } else {
-                LogUtils.i(TAG, "        用户列表为空，不设置 activeIndex")
-            }
-        }.onFailure { LogUtils.e(TAG, "        设置 activeIndex 失败: ${it.message}", it) }
+            UserManager.replaceAllUsers(validUsers, activeIndex)
+            LogUtils.i(TAG, "        成功替换 user 列表: ${validUsers.size} 个, activeIndex=$activeIndex")
+        }.onFailure { LogUtils.e(TAG, "        替换 user 失败: ${it.message}", it) }
     }
 }
 
