@@ -1,11 +1,16 @@
 package com.justwen.androidnga.ui.compose.widget
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -14,6 +19,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -28,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -96,36 +101,48 @@ fun OptionActionMenu(optionActions: List<OptionMenuData>? = null) {
 fun TopAppBarEx(
     topAppBarData: TopAppBarData,
 ) {
-    val paddingValues = WindowInsets.statusBars.asPaddingValues()
-    val top = paddingValues.calculateTopPadding()
-    val pxValue = with(LocalDensity.current) { top.toPx() }
+    val statusBarPadding = WindowInsets.statusBars.asPaddingValues()
 
-    TopAppBar(
-        backgroundColor = MaterialTheme.colors.primary,
-        windowInsets = WindowInsets(0, pxValue.toInt(), 0, 0),
-        title = {
-            if (topAppBarData.customTopBar == null) {
-                Text(text = topAppBarData.title, color = Color.White)
-            } else {
-                topAppBarData.customTopBar!!.invoke()
-            }
-        },
-        navigationIcon = {
+    Surface(
+        color = MaterialTheme.colors.primary,
+        elevation = 4.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(statusBarPadding)
+                .padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (topAppBarData.navigationIconAction != null) {
-                IconButton(onClick = {
-                    topAppBarData.navigationIconAction?.invoke()
-                }) {
+                IconButton(onClick = { topAppBarData.navigationIconAction?.invoke() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         tint = Color.White,
                         contentDescription = "Localized description"
                     )
                 }
+            } else {
+                Spacer(modifier = Modifier.size(12.dp))
             }
-        },
-        actions = {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (topAppBarData.customTopBar == null) {
+                    Text(
+                        text = topAppBarData.title,
+                        color = Color.White,
+                        style = MaterialTheme.typography.h6
+                    )
+                } else {
+                    topAppBarData.customTopBar!!.invoke()
+                }
+            }
             OptionActionMenu(optionActions = topAppBarData.optionMenuData)
-        })
+        }
+    }
 }
 
 data class TopAppBarData(val title: String) {
